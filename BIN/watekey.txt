@@ -1,0 +1,72 @@
+IDEAL
+MODEL small
+STACK 100h
+DATASEG
+; --------------------------
+messagestart	db 'press w,a,s,d to move or esc to exit'
+messageleft		db 'move left'	,13,10,$
+messageright	db 'move right'	,13,10,$
+messageup 		db 'move up'	,13,10,$
+messagedown		db 'move down'	,13,10,$
+messageerror	db 'error: not the right key try w,a,s,d'	,13,10,$
+; --------------------------
+CODESEG
+
+proc key_test
+	cmp ah, 1Eh ;left
+	jne right
+	mov dx offset messageleft
+	mov ah, 9h
+	int 21h
+right:
+	cmp ah, 20h ;right
+	jne up
+	mov dx offset messageright
+	mov ah, 9h
+	int 21h
+up:
+	cmp ah, 11h ;up
+	jne down
+	mov dx offset messageup
+	mov ah, 9h
+	int 21h
+down:
+	cmp ah, 1Fh ;down
+	jne escp
+	mov dx offset messagedown
+	mov ah, 9h
+	int 21h
+escp:
+	cmp ah, 1h 	;esc
+	jne errory
+	mov ah, 4Ch
+	int 21h
+errory:
+	mov dx offset messageerror
+	mov ah, 9h
+	int 21h
+	ret
+endp key_test
+
+
+start:
+	mov ax, @data
+	mov ds, ax
+; --------------------------
+	mov dx offset messagestart
+	mov ah, 9h
+	int 21h
+	WaitForData:
+	mov ah, 1
+	int 16h
+	jz WaitForData
+	mov ah, 0 ; there is a key in the buffer, read it and clear the buffer
+	int 16h
+	call key_test
+ 
+; --------------------------
+	
+exit:
+	mov ax, 4c00h
+	int 21h
+END start
