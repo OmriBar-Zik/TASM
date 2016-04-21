@@ -293,11 +293,10 @@ LoopYRight3X3:
 	ret	
 endp RectangleRight3X3
 
-proc KeyDetection
-; --------------------------
-	;Detect down 
-	cmp ah, 1Fh
-	jne up
+;***************************
+;***************************
+
+proc ChooseRectangleMovementUp
 	cmp [ChooseRectangleMovement], 2
 	jl IncChooseRectangleMovement 
 ; --------------------------
@@ -308,11 +307,12 @@ IncChooseRectangleMovement:
 	call ChooseRectangle
 FIncChooseRectangleMovement:
 	ret
-; --------------------------
-up:
-	;Detect up
-	cmp ah, 11h
-	jne toenter
+endp ChooseRectangleMovementUp
+
+;***************************
+;***************************
+
+proc ChooseRectangleMovementdown
 	cmp [ChooseRectangleMovement], 0
 	jg DecChooseRectangleMovement
 ; --------------------------
@@ -324,7 +324,33 @@ DecChooseRectangleMovement:
 ; --------------------------
 	FDecChooseRectangleMovement:
 	ret
-	
+endp ChooseRectangleMovementdown
+
+;***************************
+;***************************
+
+proc 
+
+
+endp
+
+;***************************
+;***************************
+
+proc KeyDetection
+; --------------------------
+	;Detect down 
+	cmp ah, 1Fh
+	jne up
+	call ChooseRectangleMovementUp
+	ret
+; --------------------------
+up:
+	;Detect up
+	cmp ah, 11h
+	jne toenter
+	call ChooseRectangleMovementdown	
+	ret
 ; --------------------------
 toenter:
 	;Detect enter
