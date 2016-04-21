@@ -329,10 +329,11 @@ endp ChooseRectangleMovementdown
 ;***************************
 ;***************************
 
-proc 
-
-
-endp
+proc EnterCheker 
+	
+	
+	
+endp EnterCheker
 
 ;***************************
 ;***************************
