@@ -11,11 +11,12 @@ ChooseRectangleMovement dw 	0
 ;ChooseRectangleMovement bw layer, layer1 place, layer2 place
 ; --------------------------
 ;text
-TEnter 	db 	10,13,	'$'
-TAtk 	db 	'ATK',	'$'
-TDef 	db 	'DEF',	'$'
-TFlee 	db	'FLEE',	'$'
-TSpace 	db 	' ',	'$'
+TEnter 		db 	10,13,	'$'
+TSpace 		db 	' ',	'$'
+TAtk 		db 	'ATK',	'$'
+TDef 		db 	'DEF',	'$'
+TFlee 		db	'FLEE',	'$'
+
 ; --------------------------
 CODESEG
 ;***************************
@@ -711,6 +712,14 @@ endp TPSpace
 
 ;***************************
 ;***************************
+
+proc ClearScreenText
+	mov cx, 30
+	ClearScreenTextloop:
+	call TPEnter
+	loop ClearScreenTextloop
+	ret
+endp ClearScreenText
 
 proc BattelText 
 	mov cx , 15
