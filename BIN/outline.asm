@@ -4,18 +4,29 @@ MODEL small
 STACK 100h
 DATASEG
 ; --------------------------
+;paint dot sessions
 x dw 160
 y dw 100
 color db 2
-ChooseRectangleMovement dw 	0	   			 
-;ChooseRectangleMovement bw layer, layer1 place, layer2 place
 ; --------------------------
-;text
+ChooseRectangleMovement dw 	0
+Layer db 0
+SafeLayer dw ?
+; --------------------------
+;special text
 TEnter 		db 	10,13,	'$'
 TSpace 		db 	' ',	'$'
+; --------------------------
+;stast text
 TAtk 		db 	'ATK',	'$'
 TDef 		db 	'DEF',	'$'
 TFlee 		db	'FLEE',	'$'
+; --------------------------
+;attack text
+HeavyAttack 	db 	'HEAVY ATK',		'$'
+NormalAttack	db	'NORMAL ATK',	'$'
+QuickAttack		db	'QUICK ATK',		'$'
+BACK			DB	17,'BACK',			'$'
 
 ; --------------------------
 CODESEG
