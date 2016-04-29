@@ -342,9 +342,25 @@ endp ChooseRectangleMovementdown
 ;***************************
 
 proc EnterCheker 
-	
-	
-	
+; --------------------------
+	cmp [ChooseRectangleMovement], 0
+	jne Option2Choose
+	call EnterATK
+	mov bx, [ChooseRectangleMovement]
+	mov [SafeLayer], bx
+	ret
+Option2Choose:
+	cmp [ChooseRectangleMovement], 1
+	jne Option3Choose
+	;call EnterDEF
+	ret
+Option3Choose:
+	cmp [ChooseRectangleMovement], 2
+	jne OptionMaxChoose
+	;call EnterFLEE
+OptionMaxChoose:
+	ret
+; --------------------------
 endp EnterCheker
 
 ;***************************
