@@ -383,9 +383,9 @@ up:
 ; --------------------------
 toenter:
 	;Detect enter
-	cmp ah, 1Fh
+	cmp ah, 1Ch
 	jne escp
-	
+	call EnterCheker
 	ret
 ; --------------------------
 escp:
