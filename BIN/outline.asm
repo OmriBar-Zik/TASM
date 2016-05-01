@@ -309,14 +309,21 @@ endp RectangleRight3X3
 ;***************************
 
 proc ChooseRectangleMovementUp
+; --------------------------
+	;check if ChooseRectangleMovement < 2
+	;if ChooseRectangleMovement < 2 
 	cmp [ChooseRectangleMovement], 2
+	;jamp to IncChooseRectangleMovement
 	jl IncChooseRectangleMovement 
 ; --------------------------
+	;else jamp to FIncChooseRectangleMovement
 	jmp FIncChooseRectangleMovement
 ; --------------------------
+	;increases ChooseRectangleMovement and calls ChooseRectangle
 IncChooseRectangleMovement:
 	inc [ChooseRectangleMovement]
 	call ChooseRectangle
+; --------------------------
 FIncChooseRectangleMovement:
 	ret
 endp ChooseRectangleMovementUp
@@ -325,11 +332,16 @@ endp ChooseRectangleMovementUp
 ;***************************
 
 proc ChooseRectangleMovementdown
+; --------------------------
+	;check if ChooseRectangleMovement > 0
+	;jamp to DecChooseRectangleMovement
 	cmp [ChooseRectangleMovement], 0
 	jg DecChooseRectangleMovement
 ; --------------------------
+	;else jmp to FDecChooseRectangleMovement 
 	jmp FDecChooseRectangleMovement
 ; --------------------------
+	;decreases ChooseRectangleMovement and calls ChooseRectangle
 DecChooseRectangleMovement:
 	dec [ChooseRectangleMovement]
 	call ChooseRectangle
@@ -343,17 +355,22 @@ endp ChooseRectangleMovementdown
 
 proc EnterCheker 
 ; --------------------------
+	;check if the Rectangle is in the firest position
 	cmp [ChooseRectangleMovement], 0
 	jne Option2Choose
 	call EnterATK
 	mov bx, [ChooseRectangleMovement]
 	mov [SafeLayer], bx
 	ret
+; --------------------------
+	;check if the Rectangle is in the second position
 Option2Choose:
 	cmp [ChooseRectangleMovement], 1
 	jne Option3Choose
 	;call EnterDEF
 	ret
+; --------------------------
+	;check if the Rectangle is in the third position
 Option3Choose:
 	cmp [ChooseRectangleMovement], 2
 	jne OptionMaxChoose
@@ -371,7 +388,7 @@ proc KeyDetection
 	;Detect down 
 	cmp ah, 1Fh
 	jne up
-	call ChooseRectangleMovementUp
+	call Layersup
 	ret
 ; --------------------------
 up:
@@ -392,9 +409,12 @@ escp:
 	;Detect esc
 	cmp ah, 1h
 	jne null
+; --------------------------
+	;go to text mode 
 	mov ah, 0
 	mov al, 2
 	int 10h
+	;exit from progrm
 	mov ah, 4Ch
 	int 21h
 	null:
@@ -410,6 +430,7 @@ proc MainRectangle
 	mov [x], 22 
 	mov [y], 110
 ; --------------------------
+	;create line 5x270 pixsels
 	mov cx, 54
 MainRectangleRight:
 	push cx
@@ -417,6 +438,7 @@ MainRectangleRight:
 	pop cx
 	loop MainRectangleRight
 ; --------------------------
+	;create line 5x80
 	mov cx, 16
 MainRectangleDown:
 	push cx
@@ -424,6 +446,7 @@ MainRectangleDown:
 	pop cx
 	loop MainRectangleDown
 ; --------------------------
+	;create line 5x265
 	mov cx, 53
 MainRectangleLeft:
 	push cx
@@ -431,12 +454,14 @@ MainRectangleLeft:
 	pop cx
 	loop MainRectangleLeft	
 ; --------------------------
+	;create line 5x75
 	mov cx, 15
 MainRectangleUp:
 	push cx
 	call RectangleUp5X5
 	pop cx
 	loop MainRectangleUp
+; --------------------------
 	ret
 endp MainRectangle
 
@@ -444,38 +469,52 @@ endp MainRectangle
 ;@@@@@@@@@@@@@@@@@@@@@@@@@
 
 proc ChooseRectangle
+; --------------------------
+	;paint 1 blue Rectangle in the top section and 2 black Rectangle in the middle and the bottom
+	;if ChooseRectangleMovement = 0
 	cmp [ChooseRectangleMovement], 0
 	jne Option2
 	call BlueOption1
 	call BlackOption2
 	call BlackOption3
+; --------------------------
 	ret
+; --------------------------
+	;paint 1 blue Rectangle in the middle section and 2 black Rectangle in the top and the bottom
+	;if ChooseRectangleMovement = 1
 Option2:
 	cmp [ChooseRectangleMovement], 1
 	jne Option3
 	call BlackOption1
 	call BlueOption2
 	call BlackOption3
+; --------------------------
 	ret
+; --------------------------
+	;paint 1 blue Rectangle in the bottom section and 2 black Rectangle in the top and the middle
+	;if ChooseRectangleMovement = 2
 Option3:
 	cmp [ChooseRectangleMovement], 2
 	jne OptionMax
 	call BlackOption1
 	call BlackOption2
 	call BlueOption3
+; --------------------------
 OptionMax:
 	ret
+; --------------------------
 endp ChooseRectangle
 
 ;***************************
 ;***************************
 
 proc BlackOption1
-
+	;seting the stating point
 	mov [x], 30
 	mov [y], 117
 	mov [color], 0
 ; --------------------------
+	;create line 3x45 towards right
 	mov cx, 15
 BlackOption1Right:
 	push cx
@@ -483,6 +522,7 @@ BlackOption1Right:
 	pop cx
 	loop BlackOption1Right
 ; --------------------------
+	;create line 3x18 towards down
 	mov cx, 6
 BlackOption1Down:
 	push cx
@@ -490,6 +530,7 @@ BlackOption1Down:
 	pop cx
 	loop BlackOption1Down
 ; --------------------------
+	;create line 3x42 towards left
 	mov cx, 14
 BlackOption1Left:
 	push cx
@@ -497,6 +538,7 @@ BlackOption1Left:
 	pop cx
 	loop BlackOption1Left	
 ; --------------------------
+	;create line 3x15 towards up
 	mov cx, 5
 BlackOption1Up:
 	push cx
@@ -512,11 +554,12 @@ endp BlackOption1
 ;***************************
 
 proc BlueOption1
-	
+	;seting the stating point
 	mov [x], 30
 	mov [y], 117
 	mov [color], 3
 ; --------------------------
+	;create line 3x45 towards right
 	mov cx, 15
 BlueOption1Right:
 	push cx
@@ -524,6 +567,7 @@ BlueOption1Right:
 	pop cx
 	loop BlueOption1Right
 ; --------------------------
+	;create line 3x18 towards down
 	mov cx, 6
 BlueOption1Down:
 	push cx
@@ -531,6 +575,7 @@ BlueOption1Down:
 	pop cx
 	loop BlueOption1Down
 ; --------------------------
+	;create line 3x15 towards left
 	mov cx, 14
 BlueOption1Left:
 	push cx
@@ -538,6 +583,7 @@ BlueOption1Left:
 	pop cx
 	loop BlueOption1Left	
 ; --------------------------
+	;create line 3x15 towardsup
 	mov cx, 5
 BlueOption1Up:
 	push cx
@@ -553,11 +599,12 @@ endp BlueOption1
 ;***************************
 
 proc BlackOption2
-
+	;seting the stating point
 	mov [x], 30
 	mov [y], 141
 	mov [color], 0
 ; --------------------------
+	;create line 3x45 towards right
 	mov cx, 15
 BlackOption2Right:
 	push cx
@@ -565,6 +612,7 @@ BlackOption2Right:
 	pop cx
 	loop BlackOption2Right
 ; --------------------------
+	;create line 3x18 towards down
 	mov cx, 6
 BlackOption2Down:
 	push cx
@@ -572,6 +620,7 @@ BlackOption2Down:
 	pop cx
 	loop BlackOption2Down
 ; --------------------------
+	;create line 3x15 towards left
 	mov cx, 14
 BlackOption2Left:
 	push cx
@@ -579,6 +628,7 @@ BlackOption2Left:
 	pop cx
 	loop BlackOption2Left	
 ; --------------------------
+	;create line 3x15 towards up
 	mov cx, 5
 BlackOption2Up:
 	push cx
@@ -587,18 +637,18 @@ BlackOption2Up:
 	loop BlackOption2Up
 ; --------------------------
 	ret
-
 endp BlackOption2
 
 ;***************************
 ;***************************
 
 proc BlueOption2
-
+	;seting the stating point
 	mov [x], 30
 	mov [y], 141
 	mov [color], 3
 ; --------------------------
+	;create line 3x45 towards right
 	mov cx, 15
 BlueOption2Right:
 	push cx
@@ -606,6 +656,7 @@ BlueOption2Right:
 	pop cx
 	loop BlueOption2Right
 ; --------------------------
+	;create line 3x18 towards down
 	mov cx, 6
 BlueOption2Down:
 	push cx
@@ -613,6 +664,7 @@ BlueOption2Down:
 	pop cx
 	loop BlueOption2Down
 ; --------------------------
+	;create line 3x15 towards left
 	mov cx, 14
 BlueOption2Left:
 	push cx
@@ -620,6 +672,7 @@ BlueOption2Left:
 	pop cx
 	loop BlueOption2Left	
 ; --------------------------
+	;create line 3x15 towards up
 	mov cx, 5
 BlueOption2Up:
 	push cx
@@ -635,11 +688,12 @@ endp BlueOption2
 ;***************************
 
 proc BlackOption3
-
+	;seting the stating point
 	mov [x], 30
 	mov [y], 165
 	mov [color], 0
 ; --------------------------
+	;create line 3x45 towards right
 	mov cx, 15
 BlackOption3Right:
 	push cx
@@ -647,6 +701,7 @@ BlackOption3Right:
 	pop cx
 	loop BlackOption3Right
 ; --------------------------
+	;create line 3x18 towards down
 	mov cx, 6
 BlackOption3Down:
 	push cx
@@ -654,6 +709,7 @@ BlackOption3Down:
 	pop cx
 	loop BlackOption3Down
 ; --------------------------
+	;create line 3x15 towards left
 	mov cx, 14
 BlackOption3Left:
 	push cx
@@ -661,6 +717,7 @@ BlackOption3Left:
 	pop cx
 	loop BlackOption3Left	
 ; --------------------------
+	;create line 3x15 towards up
 	mov cx, 5
 BlackOption3Up:
 	push cx
@@ -677,12 +734,12 @@ endp BlackOption3
 
 
 proc BlueOption3
-
+	;seting the stating point
 	mov [x], 30
 	mov [y], 165
-	
 	mov [color], 3
 ; --------------------------
+	;create line 3x45 towards right
 	mov cx, 15
 BlueOption3Right:
 	push cx
@@ -690,6 +747,7 @@ BlueOption3Right:
 	pop cx
 	loop BlueOption3Right
 ; --------------------------
+	;create line 3x18 towards down
 	mov cx, 6
 BlueOption3Down:
 	push cx
@@ -697,6 +755,7 @@ BlueOption3Down:
 	pop cx
 	loop BlueOption3Down
 ; --------------------------
+	;create line 3x15 towards left
 	mov cx, 14
 BlueOption3Left:
 	push cx
@@ -704,6 +763,7 @@ BlueOption3Left:
 	pop cx
 	loop BlueOption3Left	
 ; --------------------------
+	;create line 3x15 towards up
 	mov cx, 5
 BlueOption3Up:
 	push cx
@@ -721,6 +781,7 @@ endp BlueOption3
 ;@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 proc TPEnter 
+	;print enter in the screen / pushing the text up  a line
 	mov dx, offset TEnter
 	mov ah, 9h
 	int 21h
@@ -731,6 +792,7 @@ endp TPEnter
 ;***************************
 
 proc TPSpace
+	;PRINT space on the screen / go right once
 	mov dx, offset TSpace
 	mov ah, 9h
 	int 21h
@@ -741,6 +803,7 @@ endp TPSpace
 ;***************************
 
 proc ClearScreenText
+	;clear the text from the screen
 	mov cx, 30
 	ClearScreenTextloop:
 	call TPEnter
@@ -923,7 +986,8 @@ start:
 	mov ax, 13h
 	int 10h
 ; --------------------------
-	call BattelText
+	;calling to the starting procedure
+	call StartBattelText
 	call MainRectangle
 	call ChooseRectangle
 ; --------------------------
@@ -934,7 +998,10 @@ start:
 	int 16h
 	jz WaitForData
 ; --------------------------
+	;calls procedure that checks when key press on the keybord
 	call KeyDetection
+; --------------------------
+	;reset ah to 
 	mov ah, 0 
 	int 16h
 	jmp WaitForData
