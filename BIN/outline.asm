@@ -805,11 +805,115 @@ proc StartBattelText
 ; --------------------------
 	ret
 endp StartBattelText
+
+;***************************
+;***************************
+
+proc EnterATK
+; --------------------------
+	;go to ClearScreenText
+	call ClearScreenText
+; --------------------------
+	;SPACE x 5
+	mov cx, 5
+	SpaceLoop4:
+	call TPSpace
+	loop SpaceLoop4
+; --------------------------
+	;writing on the screen ATK
+	mov dx, offset TAtk
 	mov ah, 9h
 	int 21h
 ; --------------------------
+	;ENTER x 2
+	call TPEnter
+	call TPEnter
+; --------------------------
+	;SPACE x 10
+	mov cx, 10
+	SpaceLoop5:
+	call TPSpace
+	loop SpaceLoop5
+; --------------------------
+	;writing on the screen HEAVY ATTACK
+	mov dx, offset HeavyAttack
+	mov ah, 9h
+	int 21h
+; --------------------------
+	;SPACE x 4
+	mov cx, 4
+	SpaceLoop6:
+	call TPSpace
+	loop SpaceLoop6
+; --------------------------
+	;writing on the screen NORMAL ATTACK
+	mov dx, offset NormalAttack
+	mov ah, 9h
+	int 21h
+; --------------------------
+	;pushing the text up 1 time
+	call TPEnter
+; --------------------------
+	;SPACE x 5 
+	mov cx, 5
+	SpaceLoop7:
+	call TPSpace
+	loop SpaceLoop7
+; --------------------------
+	;print "DEF" on the screen 
+	mov dx, offset TDef
+	mov ah, 9h
+	int 21h
+; --------------------------
+	;pushing the text up 2 times
+	call TPEnter
+	call TPEnter
+; --------------------------
+	;SPACE x 8
+	mov cx, 12
+	SpaceLoop8:
+	call TPSpace
+	loop SpaceLoop8
+; --------------------------
+	;print "BACK" on the screen
+	mov dx, offset BACK
+	mov ah, 9h 
+	int 21h	
+; --------------------------
+	;space 6 times
+	mov cx, 6
+	SpaceLoop9:
+	call TPSpace
+	loop SpaceLoop9
+; --------------------------
+	;print "QUICK ATK" on the screen
+	mov dx, offset QuickAttack
+	mov ah, 9h 
+	int 21h
+; --------------------------
+	;pushing the text up 1 time
+	call TPEnter
+; --------------------------
+	;space 5 times
+	mov cx, 5
+	SpaceLoop10:
+	call TPSpace
+	loop SpaceLoop10
+; -------------------------- 
+	;print "FLEE" on the screen
+	mov dx, offset TFLEE
+	mov ah, 9h 
+	int 21h
+; --------------------------
+	;push the text up 3 times
+	call TPEnter
+	call TPEnter
+	call TPEnter
+; --------------------------
+	;
+	call MainRectangle
 	ret
-endp BattelText
+endp EnterATK
 
 start:
 	mov ax, @data
