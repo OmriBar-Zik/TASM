@@ -748,46 +748,63 @@ proc ClearScreenText
 	ret
 endp ClearScreenText
 
-proc BattelText 
-	mov cx , 15
-	EnterLoop1:
-	call TPEnter
-	loop EnterLoop1
+;***************************
+;***************************
+
+proc StartBattelText
+	;print the text on the scean
+	call ClearScreenText
 ; --------------------------
+	;5 times space
 	mov cx, 5
 	SpaceLoop1:
 	call TPSpace
 	loop SpaceLoop1
 ; --------------------------
+	;print "ATK" on the screen
 	mov dx, offset TAtk
 	mov ah, 9h
 	int 21h
 ; --------------------------
-	mov cx , 3
-	EnterLoop2:
+	;pushing the text up 3 times
 	call TPEnter
-	loop EnterLoop2
+	call TPEnter
+	call TPEnter
 ; --------------------------
+	;5 times space
 	mov cx, 5
 	SpaceLoop2:
 	call TPSpace
 	loop SpaceLoop2
 ; --------------------------
+	;print "DEF" on the screen
 	mov dx, offset TDef
 	mov ah, 9h
 	int 21h
 ; --------------------------
-	mov cx , 3
-	EnterLoop3:
+	;pushing the text up 3 times
 	call TPEnter
-	loop EnterLoop3
+	call TPEnter
+	call TPEnter
 ; --------------------------
+	;5 times space
 	mov cx, 5
 	SpaceLoop3:
 	call TPSpace
 	loop SpaceLoop3
 ; --------------------------
+	;print "FLEE" on the screen
 	mov dx, offset TFlee
+	mov ah, 9h 
+	int 21h
+; --------------------------
+	;pushing the text up 3 times
+	call TPEnter
+	call TPEnter
+	call TPEnter
+; --------------------------
+	ret
+endp StartBattelText
 	mov ah, 9h
 	int 21h
 ; --------------------------
