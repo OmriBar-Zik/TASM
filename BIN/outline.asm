@@ -476,7 +476,7 @@ proc BlackOption1
 	mov [y], 117
 	mov [color], 0
 ; --------------------------
-	mov cx, 19
+	mov cx, 15
 BlackOption1Right:
 	push cx
 	call RectangleRight3X3
@@ -490,7 +490,7 @@ BlackOption1Down:
 	pop cx
 	loop BlackOption1Down
 ; --------------------------
-	mov cx, 18
+	mov cx, 14
 BlackOption1Left:
 	push cx
 	call RectangleLeft3X3
@@ -517,7 +517,7 @@ proc BlueOption1
 	mov [y], 117
 	mov [color], 3
 ; --------------------------
-	mov cx, 19
+	mov cx, 15
 BlueOption1Right:
 	push cx
 	call RectangleRight3X3
@@ -531,7 +531,7 @@ BlueOption1Down:
 	pop cx
 	loop BlueOption1Down
 ; --------------------------
-	mov cx, 18
+	mov cx, 14
 BlueOption1Left:
 	push cx
 	call RectangleLeft3X3
@@ -558,7 +558,7 @@ proc BlackOption2
 	mov [y], 141
 	mov [color], 0
 ; --------------------------
-	mov cx, 19
+	mov cx, 15
 BlackOption2Right:
 	push cx
 	call RectangleRight3X3
@@ -572,7 +572,7 @@ BlackOption2Down:
 	pop cx
 	loop BlackOption2Down
 ; --------------------------
-	mov cx, 18
+	mov cx, 14
 BlackOption2Left:
 	push cx
 	call RectangleLeft3X3
@@ -599,7 +599,7 @@ proc BlueOption2
 	mov [y], 141
 	mov [color], 3
 ; --------------------------
-	mov cx, 19
+	mov cx, 15
 BlueOption2Right:
 	push cx
 	call RectangleRight3X3
@@ -613,7 +613,7 @@ BlueOption2Down:
 	pop cx
 	loop BlueOption2Down
 ; --------------------------
-	mov cx, 18
+	mov cx, 14
 BlueOption2Left:
 	push cx
 	call RectangleLeft3X3
@@ -640,7 +640,7 @@ proc BlackOption3
 	mov [y], 165
 	mov [color], 0
 ; --------------------------
-	mov cx, 19
+	mov cx, 15
 BlackOption3Right:
 	push cx
 	call RectangleRight3X3
@@ -654,7 +654,7 @@ BlackOption3Down:
 	pop cx
 	loop BlackOption3Down
 ; --------------------------
-	mov cx, 18
+	mov cx, 14
 BlackOption3Left:
 	push cx
 	call RectangleLeft3X3
@@ -683,7 +683,7 @@ proc BlueOption3
 	
 	mov [color], 3
 ; --------------------------
-	mov cx, 19
+	mov cx, 15
 BlueOption3Right:
 	push cx
 	call RectangleRight3X3
@@ -697,7 +697,7 @@ BlueOption3Down:
 	pop cx
 	loop BlueOption3Down
 ; --------------------------
-	mov cx, 18
+	mov cx, 14
 BlueOption3Left:
 	push cx
 	call RectangleLeft3X3
