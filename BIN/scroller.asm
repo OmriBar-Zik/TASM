@@ -751,6 +751,14 @@ endp WinScreen
 ;**********************
 ;**********************
 
+proc RestartLevel
+	call Text_Mode
+	call Graphic_Mode
+	call LeyOutCreatorLevel_1
+	call PlayerCreator
+	ret
+endp RestartLevel
+
 proc key_test
 	; --------------------------
 	cmp ah, 1Eh ;left
@@ -778,9 +786,17 @@ up:
 	; --------------------------
 down:
 	cmp ah, 1Fh ;down
-	jne escp
+	jne restart
 	; --------------------------
 	call PlayerMoveDown
+	; --------------------------
+	ret
+	; --------------------------
+restart:
+	cmp ah, 13h ;restart
+	jne escp
+	; --------------------------
+	call RestartLevel
 	; --------------------------
 	ret
 	; --------------------------
@@ -810,7 +826,7 @@ start:
 	mov ds, ax
 ; --------------------------
 ; Graphic mode
-	mov ax, 13h
+	mov ax, 13h   
 	int 10h
 ; --------------------------
 	call LeyOutCreatorLevel_1
