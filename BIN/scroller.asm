@@ -3,22 +3,26 @@ MODEL small
 STACK 100h
 DATASEG
 ; --------------------------
+; text to the screen 
 PlayerFailed			db 	'you failed', 10 dup (10), '$'
 PlayerWon				db 	'you won!', 10 dup (10), '$'
 ; --------------------------
+;
 x 						dw 	120
 y						dw 	0
 color					dw 	7
 ; --------------------------
+;the clock variable
 Clock 					equ es:6Ch
 ConsistentDelayCount	dw	2
 ; --------------------------
 DotReader				db	?
 ; --------------------------
+;player speed and movement
 PlayerMovement			db 	1
 SlowMovement			db	0
 ; --------------------------
-;level_1 				dw 	324 dup (7)
+;levels
 level_1					dw 	7 dup (7), 55, 6 dup (7) , 55 , 6 dup (7), 55 ,5 dup (7), 55 ,16 dup (7), 55 , 6 dup (7), 55 , 18 dup (7) , 55 , 2 dup (7), 55 ,  6 dup (7), 55 , 11 dup (7), 55, 24 dup (7), 55 , 26 dup (7), 55 , 18 dup (7) , 55 , 44 dup (7) , 55 , 36 dup (7) , 55 ,25 dup (7) ,55 , 3 dup (7) , 55 , 8 dup (7) , 44 , 6 dup (7) , 55 , 13 dup (7) , 55 , 7 dup (7) , 55 , 7 dup (7) , 55 , 2 dup (7)	  
 ; --------------------------
 CODESEG
@@ -55,9 +59,10 @@ endp Test_OutPut
 proc Test_position
 	mov [color], 5
 	call PaintDot
-	mov [ConsistentDelayCount], 1
-	call ConsistentDelay
+	;mov [ConsistentDelayCount], 1
+	;call ConsistentDelay
 	mov [color], 40	
+	ret
 endp Test_position
 
 ;**********************
@@ -67,6 +72,7 @@ proc Text_Mode
 	mov ah, 0
 	mov al, 2
 	int 10h
+	ret
 endp Text_Mode
 
 ;**********************
@@ -75,6 +81,7 @@ endp Text_Mode
 proc Graphic_Mode
 	mov ax, 13h
 	int 10h
+	ret
 endp Graphic_Mode
 
 ;**********************
@@ -197,7 +204,7 @@ proc LeyOutCreatorLevel_1
 	mov [y], 9
 	mov si, offset level_1
 ; --------------------------
-    ;droing 5X5 Rectangle
+    ;droing 18X18 Rectangle
     mov cx, 18
 LoopXLeyOutCreator:
     push cx
@@ -802,7 +809,7 @@ restart:
 	; --------------------------
 escp:
 	cmp ah, 1h 	;esc
-	jne space
+	jne Shift_R
 	; --------------------------
 	;retern to text mode
 	mov ah, 0
@@ -812,11 +819,19 @@ escp:
 	mov ah, 4Ch
 	int 21h	
 	; --------------------------
-space:
+Shift_R:
+	cmp ah, 21h
+	jne ToExit
+	; --------------------------
+	call Test_OutPut
+	not [SlowMovement]
 	; --------------------------
 	ret
 	; --------------------------
-	
+ToExit:
+	; --------------------------
+	ret
+	; --------------------------
 endp key_test
 
 ;**********************
