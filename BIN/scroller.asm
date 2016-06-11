@@ -1,29 +1,61 @@
+JUMPS
 IDEAL
 MODEL small
 STACK 100h
 DATASEG
 ; --------------------------
-; text to the screen 
-PlayerFailed			db 	'you failed', 10 dup (10), '$'
-PlayerWon				db 	'you won!', 10 dup (10), '$'
+;timer variables
+TimerStartTime_seconds			db	?
+TimerStartTime_minutes			db	?
+TimerEndTime_seconds			db	?
+TimerEndTime_minutes			db	?
+TimerFinelTime_seconds_Dozens	db	?
+TimerFinelTime_seconds_Units	db	?
+TimerFinelTime_minutes			db	?
 ; --------------------------
-;
-x 						dw 	120
-y						dw 	0
-color					dw 	7
+Letter_s						dw	
+
 ; --------------------------
-;the clock variable
-Clock 					equ es:6Ch
-ConsistentDelayCount	dw	2
+; sound Ports
+pit 							db 43h
+pit2							db 42h
 ; --------------------------
-DotReader				db	?
+;sound time menegers
+SoundDelay 						dw 210
+StopSound						db 0
+SoundTime						db 2
+; --------------------------
+;sound settins
+filename 						db "you_won.wav", 0 
+filehandle 						dw 0
+Buffer 							db 0
+; --------------------------
+;text to the screen 
+PlayerFailed					db 	'you failed', 10 dup (10), '$'
+PlayerWon						db 	'you won!',13, 10, '$'
+ErrorMsg 						db "Error.$"
+OutPutPlayerTime				db	'your time is:','$'
+;OutPutPlayerTimeDozens			db
+;OutPutPlayerTimeUnits			db
+; --------------------------
+;Graphics variables
+x 								dw 	120
+y								dw 	0
+color							dw 	7
+; --------------------------
+;delay variables
+Clock 							equ es:6Ch
+ConsistentDelayCount			dw	2
+; --------------------------
+;player's tests
+DotReader						db	?
 ; --------------------------
 ;player speed and movement
-PlayerMovement			db 	1
-SlowMovement			db	0
+PlayerMovement					db 	1
+SlowMovement					db	0
 ; --------------------------
-;levels
-level_1					dw 	7 dup (7), 55, 6 dup (7) , 55 , 6 dup (7), 55 ,5 dup (7), 55 ,16 dup (7), 55 , 6 dup (7), 55 , 18 dup (7) , 55 , 2 dup (7), 55 ,  6 dup (7), 55 , 11 dup (7), 55, 24 dup (7), 55 , 26 dup (7), 55 , 18 dup (7) , 55 , 44 dup (7) , 55 , 36 dup (7) , 55 ,25 dup (7) ,55 , 3 dup (7) , 55 , 8 dup (7) , 44 , 6 dup (7) , 55 , 13 dup (7) , 55 , 7 dup (7) , 55 , 7 dup (7) , 55 , 2 dup (7)	  
+;the levels array
+level_1							dw 	7 dup (7), 55, 6 dup (7) , 55 , 6 dup (7), 55 ,5 dup (7), 55 ,16 dup (7), 55 , 6 dup (7), 55 , 18 dup (7) , 55 , 2 dup (7), 55 ,  6 dup (7), 55 , 11 dup (7), 55, 24 dup (7), 55 , 26 dup (7), 55 , 18 dup (7) , 55 , 44 dup (7) , 55 , 36 dup (7) , 55 ,25 dup (7) ,55 , 3 dup (7) , 55 , 8 dup (7) , 44 , 6 dup (7) , 55 , 13 dup (7) , 55 , 7 dup (7) , 55 , 7 dup (7) , 55 , 2 dup (7)	  
 ; --------------------------
 CODESEG
 
@@ -1077,18 +1109,44 @@ endp FailScreen
 ;**********************
 ;**********************
 
+proc DesplayTimer
+	; --------------------------
+	call EndTimer
+	call TestTimersMinutes
+	call TestTimersSeconds
+	call RearrangeTimerNombers
+	call PlayerTimeOutPut
+	; --------------------------
+	ret
+	; --------------------------
+endp DesplayTimer
+
+;**********************
+;**********************
+
 proc WinScreen
+	; --------------------------
 	push dx
 	push ax
+	; --------------------------
 	call Text_Mode
+	cmp ah, 1Eh ;left
 	call Graphic_Mode
 	mov dx, offset PlayerWon
 	mov ah, 9h
 	int 21h
+	call DesplayTimer
+	call ResetTimer
+	mov [SoundTime], 2
+	call StartSound
+	; --------------------------
 	pop ax
 	pop dx
+	; --------------------------
 	ret
+	; --------------------------
 endp WinScreen
+
 
 ;**********************
 ;**********************
