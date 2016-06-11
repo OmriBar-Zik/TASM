@@ -30,6 +30,341 @@ CODESEG
 ;**********************
 ;**********************
 
+proc ResetTimer
+	mov [TimerStartTime_seconds], 0
+	mov [TimerStartTime_minutes], 0			
+	mov [TimerEndTime_seconds], 0 			
+	mov [TimerEndTime_minutes], 0			
+	mov [TimerFinelTime_seconds_Dozens], 0	
+	mov [TimerFinelTime_seconds_Units], 0	
+	mov [TimerFinelTime_minutes], 0			
+	ret
+endp ResetTimer
+
+proc TestTimersMinutes
+; --------------------------
+	push ax
+; --------------------------
+	mov ah, [TimerEndTime_minutes]
+	mov al, [TimerStartTime_minutes]
+	sub ah, al
+	mov [TimerFinelTime_minutes], ah
+; --------------------------
+	pop ax
+; --------------------------
+	ret
+; --------------------------
+endp TestTimersMinutes
+
+;**********************
+;**********************
+
+proc TestTimersSeconds
+; --------------------------
+	push bx
+; --------------------------
+	mov bh, [TimerEndTime_seconds]
+	mov bl, [TimerStartTime_seconds]
+	sub bh, bl
+	mov [TimerFinelTime_seconds_Units], bh
+; --------------------------
+	pop bx
+; --------------------------
+	ret
+; --------------------------
+endp TestTimersSeconds
+
+;**********************
+;**********************
+
+proc RearrangeTimerNombers
+; --------------------------
+OverAMinutes:
+	cmp [TimerFinelTime_seconds_Units], 60
+	jl LessAMinutes
+	sub [TimerFinelTime_seconds_Units], 60
+	jmp OverAMinutes
+LessAMinutes:
+; --------------------------
+	mov cx, 5
+DozensLoop:
+	cmp [TimerFinelTime_seconds_Units], 9
+	jg AddDozens
+	jmp DesplayNombers
+AddDozens:
+	inc [TimerFinelTime_seconds_Dozens]
+	sub [TimerFinelTime_seconds_Units], 10
+	loop DozensLoop
+; --------------------------
+DesplayNombers:
+	add [TimerFinelTime_seconds_Units], 48
+	add [TimerFinelTime_seconds_Dozens], 48
+	add [TimerFinelTime_minutes], 48
+; --------------------------
+	ret
+; --------------------------
+endp RearrangeTimerNombers
+
+;**********************
+;**********************
+
+proc StartTimer
+; --------------------------
+	push ax
+	push cx
+	push dx
+; --------------------------
+	mov ah, 2Ch
+	int 21h
+	mov [TimerStartTime_seconds], dh
+	mov [TimerStartTime_minutes], cl
+; --------------------------
+	pop dx
+	pop cx
+	pop ax
+; --------------------------
+	ret
+; --------------------------
+endp StartTimer
+
+;**********************
+;**********************
+
+proc EndTimer
+; --------------------------
+	push ax
+	push cx
+	push dx
+; --------------------------
+	mov ah, 2Ch
+	int 21h
+	mov [TimerEndTime_seconds], dh
+	mov [TimerEndTime_minutes], cl
+; --------------------------
+	pop dx
+	pop cx
+	pop ax
+; --------------------------
+	ret
+; --------------------------
+endp EndTimer
+
+
+proc PlayerTimeOutPut
+; --------------------------
+	push dx
+	push si
+	push ax
+; --------------------------
+	mov dx, offset OutPutPlayerTime
+	mov ah, 9h
+	int 21h
+	mov dl, [TimerFinelTime_minutes]
+	mov ah, 2
+	int 21h	
+	mov dl, ' '
+	mov ah, 2
+	int 21h
+	mov dl, [TimerFinelTime_seconds_Dozens]
+	mov ah, 2
+	int 21h	
+	mov dl, [TimerFinelTime_seconds_Units]
+	mov ah, 2
+	int 21h	
+
+; --------------------------
+	pop ax
+	pop si
+	pop dx
+; --------------------------
+	ret
+; --------------------------
+endp PlayerTimeOutPut
+
+;**********************
+;**********************
+
+proc SoundEnd
+; --------------------------
+	push bx
+	push dx
+; --------------------------
+	mov ah, 2Ch
+	int 21h
+	mov [TimerEndTime_seconds], dh
+; --------------------------
+	mov bh, [TimerEndTime_seconds]
+	mov bl, [TimerStartTime_seconds]
+	sub bh, bl
+	mov ch, [SoundTime] 
+	mov [TimerFinelTime_seconds_Units], bh
+; --------------------------
+	cmp [TimerFinelTime_seconds_Units], ch
+	jl SoundStoped
+	mov [StopSound], 1
+SoundStoped:
+; --------------------------
+	pop dx
+	pop bx
+; --------------------------
+	ret
+; --------------------------
+endp SoundEnd
+
+;**********************
+;**********************
+
+proc PrintAX ; For debugging
+; --------------------------
+	push bx
+	push cx
+	push dx
+	push ax
+; --------------------------
+	xor cx, cx
+shrinkax:
+	inc cx
+	mov bx, 10
+	xor dx, dx
+	div bx
+	push dx
+	cmp al, 0
+	je printloop
+	jmp shrinkax
+printloop:
+	pop ax
+	mov dl, '0'
+	add dl, al
+	mov ah, 2h
+	int 21h
+	loop printloop
+; --------------------------
+	pop ax
+	pop dx
+	pop cx
+	pop bx
+; --------------------------
+	ret
+; --------------------------
+endp PrintAX
+
+;**********************
+;**********************
+
+proc br ; Print line break
+; --------------------------
+	push dx
+	push ax
+; --------------------------
+	mov dl, 10
+	mov ah, 2
+	int 21h
+	mov dl, 13
+	mov ah, 2
+	int 21h
+; --------------------------
+	pop ax
+	pop dx
+; --------------------------
+	ret
+; --------------------------
+endp br
+
+;**********************
+;**********************
+
+proc read ; Read next sample
+; --------------------------
+	push bx
+	push cx
+	push dx
+; --------------------------
+	mov ah, 3Fh
+	mov bx, [filehandle]
+	mov cx, 1
+	lea dx, [Buffer]
+	int 21h
+	jc errorcode
+	mov al, [Buffer]
+	xor ah, ah
+	mov bx, 54
+	mul bx
+	;call PrintAX
+	;mov ax, dx ; Result is in DX because we need to div by 65536 which is all of AX
+	shr ax, 8
+; --------------------------
+	pop dx
+	pop cx
+	pop bx
+; --------------------------
+	ret
+; --------------------------
+endp read
+
+;**********************
+;**********************
+
+proc StartSound
+call StartTimer
+mov [StopSound], 0
+; --------------------------
+	push ax
+	push bx
+	push cx
+	push dx
+; --------------------------
+	mov ah, 3Dh
+	xor al, al
+	lea dx, [filename]
+	int 21h
+	mov [filehandle], ax
+	call br
+	mov al, 90h
+	out 43h, al
+	in al, 61h
+	or al, 3
+	out 61h, al
+	cli
+	mov ax, 0
+totalloop:
+	call read ; Read file
+	out 42h, al ; Send data
+	mov bx, ax
+	mov cx, [SoundDelay]
+portloop:
+	loop portloop
+	mov ax, bx
+	out 42h, ax ; Send data
+	mov cx, [SoundDelay]
+rloop:
+	loop rloop
+	call read
+	call SoundEnd
+	cmp [StopSound], 1
+	je errorcode
+	jmp totalloop
+	
+errorcode:
+	; Close
+	sti
+	mov al, 86h
+	out 43h, al
+	mov ah, 3Eh
+	mov bx, [filehandle]
+	int 21h
+; --------------------------
+	pop dx
+	pop cx
+	pop bx
+	pop ax
+; --------------------------
+	ret
+; --------------------------
+endp StartSound
+
+;**********************
+;**********************
+
 proc Test_Stop
 ; --------------------------
 	push ax
