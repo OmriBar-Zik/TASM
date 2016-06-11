@@ -1239,6 +1239,7 @@ start:
 ; --------------------------
 	call LeyOutCreatorLevel_1
 	call PlayerCreator
+	call StartTimer
 ; --------------------------
 	WaitForData:
 	mov ah, 1
