@@ -11,9 +11,9 @@ BIN/tests.asm
 BIN/Ttimer.asm
 BIN/TEST.MAP
 BIN/scrollert.asm
-*.TR
-*.MAP
-*.OBJ
 BIN/TTIMER.EXE
 BIN/TESTS.EXE
 BIN/TEST.OBJ
+*.TR
+*.MAP
+*.OBJ
