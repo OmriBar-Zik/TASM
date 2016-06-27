@@ -305,15 +305,12 @@ LoopYRight3X3:
     sub [y], 1
 ; --------------------------
     ret
-endp RectangleRight3X3
+endp Rectangleght3X3
 
 ;***************************
 ;***************************
 
 proc ChooseRectangleMovementUp
-; --------------------------
-	cmp Layer, 0
-	jne ChooseRectangleMovement_ATK_Up
 ; --------------------------
     ;check if ChooseRectangleMovementMain < 2
     ;if ChooseRectangleMovementMain < 2
@@ -332,31 +329,6 @@ FIncChooseRectangleMovement:
 ; --------------------------
     ret
 ; --------------------------
-ChooseRectangleMovement_ATK_Up:
-
-    cmp [ChooseRectangleMovementMain_ATK], 0
-	jne FIncChooseRectangleMovement_ATK
-	cmp [ChooseRectangleMovementMain_ATK], 1
-	jne FIncChooseRectangleMovement_ATK
-    jl IncChooseRectangleMovement_AKT
-	cmp [ChooseRectangleMovementMain_ATK], 5
-	jl 
-; --------------------------
-    ;else jamp to FIncChooseRectangleMovement
-    jmp FIncChooseRectangleMovement_ATK
-; --------------------------
-    ;increases ChooseRectangleMovementMain and calls ChooseRectangle
-IncChooseRectangleMovement__ATK:
-    inc [ChooseRectangleMovement_ATK]
-    call ChooseRectangle
-FIncChooseRectangleMovement_ATK:
-; --------------------------
-    ret
-; --------------------------
-	
-	
-	
-	
 endp ChooseRectangleMovementUp
 
 ;***************************
